@@ -9,10 +9,22 @@ import java.util.ArrayList;
 
 import br.usjt.arqsw.entity.Fila;
 
+/** Classe DAO para comunicaçao com o banco de dados
+ * @author	Lucas Vasconcelos Molessani
+ * @version 1.00
+ * @since   Release Inicial
+ */	
 public class FilaDAO {
-
+	
+	/** Lista todos os Chamados de acordo com uma Fila
+	 * @author	Lucas Vasconcelos Molessani
+	 * @version 1.00
+	 * @since   Release Inicial
+	 * @param	Fila
+	 * @return 	ArrayList<Fila>
+	 */	
 	public ArrayList<Fila> listarFilas() throws IOException {
-		String query = "SELECT ID_FILA, NM_FILA FROM FILA";
+		String query = "select id_fila, nm_fila from fila";
 		ArrayList<Fila> lista = new ArrayList<>();
 		try(Connection conn = ConnectionFactory.getConnection();
 			PreparedStatement pst = conn.prepareStatement(query);
@@ -20,8 +32,8 @@ public class FilaDAO {
 			
 			while(rs.next()) {
 				Fila fila = new Fila();
-				fila.setId(rs.getInt("ID_FILA"));
-				fila.setNome(rs.getString("NM_FILA"));
+				fila.setId(rs.getInt("id_fila"));
+				fila.setNome(rs.getString("nm_fila"));
 				lista.add(fila);
 			}
 			
@@ -31,6 +43,13 @@ public class FilaDAO {
 		return lista;
 	}
 	
+	/** Carrega uma Fila de acordo com o Id.
+	 * @author	Lucas Vasconcelos Molessani
+	 * @version 1.00
+	 * @since   Release Inicial
+	 * @param	int
+	 * @return 	Fila
+	 */	
 	public Fila carregar(int id) throws IOException {
 		Fila fila = new Fila();
 		String query = "SELECT ID_FILA, NM_FILA FROM FILA WHERE FILA.ID_FILA = ?";
@@ -45,11 +64,11 @@ public class FilaDAO {
 					fila.setId(-1);
 					fila.setNome(rs.getString(null));
 				}				
-			}catch(SQLException e) {
-				throw new IOException(e);
+			}catch(SQLException e1) {
+				throw new IOException(e1);
 			}			
-		}catch(SQLException e1) {
-			throw new IOException(e1);
+		}catch(SQLException e) {
+			throw new IOException(e);
 		}	
 		
 		return fila;
