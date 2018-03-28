@@ -2,51 +2,39 @@ package br.usjt.arqsw.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import br.usjt.arqsw.dao.ChamadoDAO;
 import br.usjt.arqsw.entity.Chamado;
 import br.usjt.arqsw.entity.Fila;
-
-/** Classe de serviço chamado
- * @author	Lucas Vasconcelos Molessani
- * @version 1.00
- * @since   Release Inicial
- */	
+/**
+ * 
+ * @author Lucas Vasconcelos Molessani - 201508392
+ *
+ */
+@Service
 public class ChamadoService {
+	ChamadoDAO dao;
 	
-	private ChamadoDAO dao;
-	
-	/** Construtor da classe
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 */	
-	public ChamadoService() {
-		dao = new ChamadoDAO();
+	@Autowired
+	public ChamadoService(ChamadoDAO dao){
+		this.dao = dao;
 	}
 	
+	public int novoChamado(Chamado chamado) throws IOException{
+		chamado.setDataAbertura(new Date());
+		chamado.setDataFechamento(null);
+		chamado.setStatus(Chamado.ABERTO);
+		return -1;
+		//return dao.inserirChamado(chamado);
+	}
 	
-	/** Retorna uma lista de Chamados cadastrados de acordo com uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila
-	 * @return 
-	 */	
-	public ArrayList<Chamado> listarChamados(Fila fila) throws IOException{		
+	public List<Chamado> listarChamados(Fila fila) throws IOException{
 		return dao.listarChamados(fila);
-	}
-	
-	/** Inclui Chamados cadastrados de acordo com uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	chamado
-	 * @return 
-	 */	
-	
-	public int incluirChamado(Chamado chamado) throws IOException {
-		return dao.incluir(chamado);
 	}
 
 }

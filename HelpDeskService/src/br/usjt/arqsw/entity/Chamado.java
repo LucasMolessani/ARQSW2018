@@ -1,161 +1,109 @@
 package br.usjt.arqsw.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.constraints.Min;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-/** Classe Bean Chamado
- * @author	Lucas Vasconcelos Molessani
- * @version 1.00
- * @since   Release Inicial
- */	
-public class Chamado implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	@NotNull(message="O id chamado não pode ser nulo")
-	@Min(value=1, message="O id chamado não pode ser vazio")
-	private int 	id;
-	
-	@NotNull(message="A descrição não pode ser nula.")
-	@Size(min=5, max=45, message="a descrição do chamado deve estar entre 5 e 45 caracteres.")
-	private String 	descricao;
-	
-	@NotNull(message="O status não pode ser nulo.")
-	@Size(min=5, max=45, message="O status do chamado deve estar entre 5 e 45 caracteres.")
-	private String 	status;
-	
-	@NotNull(message="A data de abertura não pode ser nula")
-	@Min(value=1, message="A data de abertura não pode vazia")
-	private Date	dt_abertura;
-	private Date	dt_fechamento;
+/**
+ * 
+ * @author Lucas Vasconcelos Molessani - 201508392
+ *
+ */
+@Entity
+public class Chamado {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id_chamado")
+	private int numero;
 	
 	@NotNull
-	@Min(value=1, message="Deve conter um fila para esse chamado")
+	@Column(name="dt_abertura")
+	private Date dataAbertura;
+	
+	@Column(name="dt_fechamento")
+	private Date dataFechamento;
+	
+	@NotNull
+	private String status;
+	
+	@NotNull 
+	@Size(max=100,min=10, message="O tamanho da descriÃ§Ã£o deve estar entre 10 e 100 caracteres")
+	private String descricao;
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name="id_fila")
 	private Fila fila;
 	
-	/** Modificador getId retorna o valor do id de um chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	int
-	 */	
-	public int getId() {
-		return id;
-	}
 	
-	/** SetId altera o valor do id de uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Int
-	 */	
-	public void setId(int id) {
-		this.id = id;
-	}
+	public static final String ABERTO = "aberto";
+	public static final String FECHADO = "fechado";
 	
-	/** GetDescricao retorna a descricao de uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	String
-	 */	
-	public String getDescricao() {
-		return descricao;
+	public int getNumero() {
+		return numero;
 	}
-	
-	/** SetDescricao altera a propriedade  descricao
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	String
-	 */	
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setNumero(int numero) {
+		this.numero = numero;
 	}
-	
-	/** GetStatus retorna o Status de chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	String
-	 */	
+	public Date getDataAbertura() {
+		return dataAbertura;
+	}
+	public void setDataAbertura(Date dataAbertura) {
+		this.dataAbertura = dataAbertura;
+	}
+	public Date getDataFechamento() {
+		return dataFechamento;
+	}
+	public void setDataFechamento(Date dataFechamento) {
+		this.dataFechamento = dataFechamento;
+	}
 	public String getStatus() {
 		return status;
 	}
-	
-	/** SetStatus Altera o status de um chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	String
-	 */	
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	/** GetDt_abertura retorna a data de abertura de um Chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	Date
-	 */	
-	public Date getDt_abertura() {
-		return dt_abertura;
-	}
-	
-	/** SetDt_abertura altera a data de abertura de um Chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Date
-	 */	
-	public void setDt_abertura(Date dt_abertura) {
-		this.dt_abertura = dt_abertura;
-	}
-	
-	/** GetDt_fechamento retorna a data de fechamento de um Chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	Date
-	 */	
-	public Date getDt_fechamento() {
-		return dt_fechamento;
-	}
-	
-	/** SetDt_fechamento Altera a data de fechamento de um Chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Date
-	 */	
-	public void setDt_fechamento(Date dt_fechamento) {
-		this.dt_fechamento = dt_fechamento;
-	}
-	
-	/** Retorna o objeto Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @return 	Fila
-	 */	
 	public Fila getFila() {
 		return fila;
 	}
-	
-	/** Altera o objeto Fila 
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila
-	 */	
 	public void setFila(Fila fila) {
 		this.fila = fila;
 	}
 	
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 	
+	public int getTempoDias(){
+		//getTime e currentTimeMillis retornam o tempo em milisegundos
+		//dividir por 1000 * 60 * 60 * 24 converte para dias
+		int dias;
+		if(dataFechamento == null){
+			//considera o momento atual para calcular o tempo aberto
+			dias =  (int)(System.currentTimeMillis() - dataAbertura.getTime())/(1000 * 60 * 60 * 24);
+		} else {
+			//considera a data de fechamento para calcular o tempo aberto
+			dias = (int)(dataFechamento.getTime() - dataAbertura.getTime())/(1000 * 60 * 60 * 24);
+		}
+		return dias;
+	}
+	
+	@Override
+	public String toString() {
+		return "Chamado [numero=" + numero + ", dataAbertura=" + dataAbertura
+				+ ", dataFechamento=" + dataFechamento + ", status=" + status
+				+ ", descricao=" + descricao + ", fila=" + fila + "]";
+	}
+
+
 }

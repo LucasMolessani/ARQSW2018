@@ -2,8 +2,11 @@ package br.usjt.arqsw.controller;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,152 +16,74 @@ import br.usjt.arqsw.entity.Chamado;
 import br.usjt.arqsw.entity.Fila;
 import br.usjt.arqsw.service.ChamadoService;
 import br.usjt.arqsw.service.FilaService;
-
-
-/** Classe para controlar as requisições do cliente com o servidor
- * @author	Lucas Vasconcelos Molessani
- * @version 1.00
- * @since   Release Inicial
+/**
+ * 
+ * @author Lucas Vasconcelos Molessani - 201508392
+ *
  */
+@Transactional
 @Controller
 public class ManterChamadosController {
-	
 	private FilaService filaService;
 	private ChamadoService chamadoService;
 
-	/** Construtor da Classe ManterChamados
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Nenhum
-	 * @return 	Nenhum
-	 */
-	public ManterChamadosController() {
-		filaService = new FilaService();
-		chamadoService = new ChamadoService();
+	@Autowired
+	public ManterChamadosController(FilaService fs, ChamadoService cs) {
+		filaService = fs;
+		chamadoService = cs;
 	}
 
-	/** Mapeando a requisição para pagina Index
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Nenhum
-	 * @return 	String
+	/**
+	 * 
+	 * @return
 	 */
 	@RequestMapping("index")
 	public String inicio() {
 		return "index";
 	}
 
-	/** Consulta e retorna as Filas de Serviço
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Nenhum
-	 * @return 	List<Fila>
-	 */
 	private List<Fila> listarFilas() throws IOException{
 			return filaService.listarFilas();
 	}
 	
-	/** Consulta e retorna os Chamados de acordo com a Fila de Serviço
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila
-	 * @return 	List<Chamado>
+	/**
+	 * 
+	 * @param model Acesso Ã  request http
+	 * @return JSP de Listar Chamados
 	 */
-	private List<Chamado> listarChamados(Fila fila) throws IOException{
-			return chamadoService.listarChamados(fila);
-	}
-	
-	
-	/** Mapeando a requisição para pagina de listar Filas
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Model
-	 * @return 	String
-	 */	
 	@RequestMapping("/listar_filas_exibir")
 	public String listarFilasExibir(Model model) {
 		try {
 			model.addAttribute("filas", listarFilas());
-			return "Chamado/ChamadoListar";
+			return "ChamadoListar";
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "Erro";
 		}
 	}
-	/** Mapeando a requisição para pagina de listar os chamados
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila, BindingResult, Model
-	 * @return 	String
-	 */	
+	
 	@RequestMapping("/listar_chamados_exibir")
 	public String listarChamadosExibir(@Valid Fila fila, BindingResult result, Model model) {
 		try {
 			if (result.hasFieldErrors("id")) {
 				model.addAttribute("filas", listarFilas());
 				System.out.println("Deu erro " + result.toString());
-				return "Chamado/ChamadoListar";
+				return "ChamadoListar";
+				//return "redirect:listar_filas_exibir";
 			}
-			fila = filaService.carregar(fila.getId());			
-			model.addAttribute("fila", fila);			
-			model.addAttribute("chamados", listarChamados(fila));
+			fila = filaService.carregar(fila.getId());
+			model.addAttribute("fila", fila);
+
+			// TODO CÃ³digo para carregar os chamados
+			List<Chamado> chamados = chamadoService.listarChamados(fila);
+			model.addAttribute("chamados", chamados);
 			
-			return "Chamado/ChamadoListarExibir";
+			return "ChamadoListarExibir";
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "Erro";
 		}
 	}
-	
-	/** Mapeando a requisição para pagina de inclusão de chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila, BindingResult, Model
-	 * @return 	String
-	 */	
-	@RequestMapping("/novo_chamado")
-	public String novoChamado(Model model) {
-		try {
-			model.addAttribute("filas", listarFilas());
-			return "Chamado/IncluirChamado";
-			
-		}catch(IOException e) {
-			e.printStackTrace();
-			return "erro";
-		}
-	}
-	
-	/** Mapeando a requisição para pagina de inclusão de chamado
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila, BindingResult, Model
-	 * @return 	String
-	 */	
-	@RequestMapping("/incluir_chamado")
-	public String incluirChamado(@Valid Fila fila, @Valid Chamado chamado, BindingResult result, Model model) {
-		try {
-			if(result.hasFieldErrors("descricao")) {
-				model.addAttribute("filas", listarFilas());
-				System.out.println("Deu erro " + result.toString());
-				return "Chamado/IncluirChamado";
-			}
-			chamado.setFila(fila);
-			chamadoService.incluirChamado(chamado);			
-			model.addAttribute("chamado", chamado);
-			return "Chamado/VisualizarChamado";
-			
-		}catch(IOException e) {
-			e.printStackTrace();
-			return "erro";
-		}
-	}
+
 }

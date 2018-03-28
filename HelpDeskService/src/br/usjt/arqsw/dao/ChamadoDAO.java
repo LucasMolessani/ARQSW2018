@@ -1,99 +1,69 @@
 package br.usjt.arqsw.dao;
 
-
-
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.springframework.stereotype.Repository;
 
 import br.usjt.arqsw.entity.Chamado;
 import br.usjt.arqsw.entity.Fila;
-
-/** Classe Data Access Object  para comunicaçao com o banco de dados
- * @author	Lucas Vasconcelos Molessani
- * @version 1.00
- * @since   Release Inicial
+/**
+ * 
+ * @author Lucas Vasconcelos Molessani - 201508392
+ *
  */
+@Repository
 public class ChamadoDAO {
+	@PersistenceContext
+	EntityManager manager;
 	
-	/** Lista todos os Chamados de acordo com uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Fila
-	 * @return 	ArrayList<Chamado>
-	 */	
-	public ArrayList<Chamado> listarChamados(Fila fila) throws IOException {
-		String query = "SELECT CH.ID_CHAMADO, "
-							+ "CH.DESCRICAO, "
-							+ "CH.STATUS, "
-							+ "CH.DT_ABERTURA, "
-							+ "CH.DT_FECHAMENTO, "
-							+ "FL.ID_FILA, "
-							+ "FL.NM_FILA "
-						+ "FROM CHAMADO AS CH INNER JOIN FILA AS FL ON CH.ID_FILA = FL.ID_FILA "
-						+ "WHERE FL.ID_FILA = ? ";
-		
-		ArrayList<Chamado> chamados = new ArrayList<>();
-		try(Connection conn = ConnectionFactory.getConnection();
-			PreparedStatement pst = conn.prepareStatement(query);){
-			pst.setInt(1, fila.getId());
-			try(ResultSet rs = pst.executeQuery();){				
-				while(rs.next()) {
-					Chamado chamado = new Chamado();
-					chamado.setId(rs.getInt("ID_CHAMADO"));
-					chamado.setDescricao(rs.getString("CH.DESCRICAO"));
-					chamado.setStatus(rs.getString("CH.STATUS"));
-					chamado.setDt_abertura(rs.getDate("CH.DT_ABERTURA"));
-					chamado.setDt_fechamento(rs.getDate("CH.DT_FECHAMENTO"));
-					fila.setId(rs.getInt("FL.ID_FILA"));
-					fila.setNome(rs.getString("FL.NM_FILA"));
-					chamado.setFila(fila);					
-					chamados.add(chamado);
-				}
-			}catch (SQLException e1) {
-				throw new IOException(e1);
-			}			
-		} catch (SQLException e) {
-			throw new IOException(e);
-		}
-		return chamados;
+	public int inserirChamado(Chamado chamado) throws IOException {
+		manager.persist(chamado);
+		return chamado.getNumero();
 	}
 	
-	/** Inclui chamados em uma Fila
-	 * @author	Lucas Vasconcelos Molessani
-	 * @version 1.00
-	 * @since   Release Inicial
-	 * @param	Chamado
-	 * @return 	int
-	 */
-	public int incluir(Chamado ch) throws IOException {
-		String string = "INSERT INTO CHAMADO(DESCRICAO, STATUS, DT_ABERTURA, ID_FILA) "
-							+ "VALUES (?, Aberto, Now(), ? )";
+	public List<Chamado> listarChamadosAbertos(Fila fila) throws IOException{
+		//conectei minha fila com a persistencia
+		fila = manager.find(Fila.class, fila.getId());
+		
+		String jpql = "select c from Chamado c where c.fila = :fila and c.status = :status";
+		
+		Query query = manager.createQuery(jpql);
+		query.setParameter("fila", fila);
+		query.setParameter("status", Chamado.ABERTO);
 
-		try (Connection conn = ConnectionFactory.getConnection();
-				PreparedStatement stm = conn.prepareStatement(string);) {
-				stm.setString(1, ch.getDescricao());
-				stm.setInt(2, ch.getFila().getId());
-				stm.execute();
+		List<Chamado> result = query.getResultList();
+		return result;
+	}
+	
+	public List<Chamado> listarChamados(Fila fila) throws IOException{
+		//conectei minha fila com a persistencia
+				fila = manager.find(Fila.class, fila.getId());
 				
-				String sqlQuery = "SELECT LAST_INSERT_ID()";
-				try (PreparedStatement stm2 = conn.prepareStatement(sqlQuery);
-						ResultSet rs = stm2.executeQuery();) {
-					if (rs.next()) {
-						ch.setId(rs.getInt(1));
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
+				String jpql = "select c from Chamado c where c.fila = :fila";
+				
+				Query query = manager.createQuery(jpql);
+				query.setParameter("fila", fila);
+
+				List<Chamado> result = query.getResultList();
+				return result;
+	}
+
+	public void fecharChamados(ArrayList<Integer> lista) throws IOException{
+		
+			for(int id:lista){
+				Chamado chamado = manager.find(Chamado.class, id);
+				chamado.setDataFechamento(new java.util.Date());
+				chamado.setStatus(Chamado.FECHADO);
+				manager.merge(chamado);
 			}
-			return ch.getId();
-		}
+		
+	}
+
 
 }
