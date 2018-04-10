@@ -8,17 +8,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index">Sistema de Chamados</a>
+                <a class="navbar-brand" href="index">Sistema de chamados</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="listar_filas_exibir">Consultar Chamados</a>
+                    <li><a href="listar_filas_exibir">Consultar chamados</a>
                     </li>
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="novo_chamado">Novo Chamado</a>
+                    <li><a href="criar_chamado">Criar chamado</a>
                     </li>
                 </ul>
             </div>

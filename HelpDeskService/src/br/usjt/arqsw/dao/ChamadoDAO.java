@@ -1,69 +1,42 @@
 package br.usjt.arqsw.dao;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
 import br.usjt.arqsw.entity.Chamado;
-import br.usjt.arqsw.entity.Fila;
+
 /**
  * 
- * @author Lucas Vasconcelos Molessani - 201508392
- *
+ * @author Lucas Vasconcelos Molessani - 201508392  
+ * CCP3AN-MCA
+ * Arquitetura de software
  */
 @Repository
 public class ChamadoDAO {
 	@PersistenceContext
-	EntityManager manager;
-	
-	public int inserirChamado(Chamado chamado) throws IOException {
-		manager.persist(chamado);
-		return chamado.getNumero();
-	}
-	
-	public List<Chamado> listarChamadosAbertos(Fila fila) throws IOException{
-		//conectei minha fila com a persistencia
-		fila = manager.find(Fila.class, fila.getId());
-		
-		String jpql = "select c from Chamado c where c.fila = :fila and c.status = :status";
-		
-		Query query = manager.createQuery(jpql);
-		query.setParameter("fila", fila);
-		query.setParameter("status", Chamado.ABERTO);
+	private EntityManager manager;
 
-		List<Chamado> result = query.getResultList();
-		return result;
-	}
-	
-	public List<Chamado> listarChamados(Fila fila) throws IOException{
-		//conectei minha fila com a persistencia
-				fila = manager.find(Fila.class, fila.getId());
-				
-				String jpql = "select c from Chamado c where c.fila = :fila";
-				
-				Query query = manager.createQuery(jpql);
-				query.setParameter("fila", fila);
-
-				List<Chamado> result = query.getResultList();
-				return result;
+	@SuppressWarnings("unchecked")
+	public List<Chamado> listarPorIdFila(int id) throws IOException {
+		return manager.createQuery("select c from Chamado c Where c.fila.id = ?").setParameter(1, id).getResultList();
 	}
 
-	public void fecharChamados(ArrayList<Integer> lista) throws IOException{
-		
-			for(int id:lista){
-				Chamado chamado = manager.find(Chamado.class, id);
-				chamado.setDataFechamento(new java.util.Date());
-				chamado.setStatus(Chamado.FECHADO);
-				manager.merge(chamado);
-			}
-		
+	public Chamado salvar(Chamado chamado) {
+		 manager.persist(chamado);
+		 return obterUltimoRegistro();
 	}
 
+	private Chamado obterUltimoRegistro() {
+		return (Chamado) manager.createQuery("select c from Chamado c Order By c.id desc").setMaxResults(1).getSingleResult();
+	}
+
+	public Chamado obterPorId(int idChamado) {
+		return manager.find(Chamado.class, idChamado);
+	}
 
 }

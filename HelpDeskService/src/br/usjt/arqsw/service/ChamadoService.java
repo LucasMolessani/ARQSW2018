@@ -1,7 +1,6 @@
 package br.usjt.arqsw.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,27 +13,49 @@ import br.usjt.arqsw.entity.Fila;
 /**
  * 
  * @author Lucas Vasconcelos Molessani - 201508392
+ * CCP3AN-MCA 
+ * Arquitetura de software
  *
  */
 @Service
 public class ChamadoService {
-	ChamadoDAO dao;
+	private ChamadoDAO chamadoDAO;
 	
 	@Autowired
-	public ChamadoService(ChamadoDAO dao){
-		this.dao = dao;
+	public ChamadoService(ChamadoDAO chamadoDAO) {
+		this.chamadoDAO = chamadoDAO;
 	}
-	
-	public int novoChamado(Chamado chamado) throws IOException{
+	/**
+	 * Método para encontrar chamados pela Fila
+	 * @param fila Fila para encontrar chamados relacionados
+	 * @return Lista de chamados
+	 * @throws IOException
+	 */
+	public List<Chamado> listarChamadoPorFila(Fila fila) throws IOException {
+		return chamadoDAO.listarPorIdFila(fila.getId());
+	}
+	/**
+	 * Método para salvar um chamado
+	 * @param chamado Chamado que deseja salvar
+	 * @return Chamado salvo
+	 * @throws IOException
+	 */
+	public Chamado salvar(Chamado chamado) throws IOException {
 		chamado.setDataAbertura(new Date());
-		chamado.setDataFechamento(null);
 		chamado.setStatus(Chamado.ABERTO);
-		return -1;
-		//return dao.inserirChamado(chamado);
+		
+		Chamado chamadoSalvo = chamadoDAO.salvar(chamado);
+		
+		return chamadoSalvo;
 	}
-	
-	public List<Chamado> listarChamados(Fila fila) throws IOException{
-		return dao.listarChamados(fila);
+	public Chamado fechar(int idChamado) {
+		Chamado chamado = chamadoDAO.obterPorId(idChamado);
+		chamado.setStatus(Chamado.FECHADO);
+		chamado.setDataFechamento(new Date());
+		chamadoDAO.salvar(chamado);
+		
+		return chamado;
+		
 	}
 
 }

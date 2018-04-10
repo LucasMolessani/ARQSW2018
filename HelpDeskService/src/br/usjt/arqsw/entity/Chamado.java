@@ -1,5 +1,6 @@
 package br.usjt.arqsw.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,48 +10,74 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 /**
  * 
  * @author Lucas Vasconcelos Molessani - 201508392
- *
+ * CCP3AN-MCA 
+ * Arquitetura de software
  */
 @Entity
-public class Chamado {
+@Table(name = "chamado")
+public class Chamado implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public static final String ABERTO = "Aberto";
+	public static final String FECHADO = "Fechado";
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_chamado")
-	private int numero;
+	@Column(name = "ID_CHAMADO")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
-	@NotNull
-	@Column(name="dt_abertura")
-	private Date dataAbertura;
-	
-	@Column(name="dt_fechamento")
-	private Date dataFechamento;
-	
-	@NotNull
-	private String status;
-	
-	@NotNull 
-	@Size(max=100,min=10, message="O tamanho da descriÃ§Ã£o deve estar entre 10 e 100 caracteres")
+	@NotNull(message = "A descrição não pode estar vazia.")
+	@NotEmpty(message = "A descrição não pode estar vazia.")
+	@Size(min = 5, max = 100, message = "A descrição deve ter entre 5 e 100 caracteres.")
+	@Column(name = "DESCRICAO")
 	private String descricao;
 	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name="id_fila")
+	@Column(name = "STATUS")
+	private String status;
+	
+	@Column(name = "DT_ABERTURA")
+	@JsonFormat(pattern = "dd-MM-yyyy")
+	private Date dataAbertura;
+	
+	@Column(name = "DT_FECHAMENTO")
+	@JsonFormat(pattern = "dd-MM-yyyy")
+	private Date dataFechamento;
+	
+	@Valid
+	@JoinColumn(name = "ID_FILA", referencedColumnName = "ID_FILA")
+    @ManyToOne
 	private Fila fila;
 	
-	
-	public static final String ABERTO = "aberto";
-	public static final String FECHADO = "fechado";
-	
-	public int getNumero() {
-		return numero;
+	public Integer getId() {
+		return id;
 	}
-	public void setNumero(int numero) {
-		this.numero = numero;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public Date getDataAbertura() {
 		return dataAbertura;
@@ -64,46 +91,10 @@ public class Chamado {
 	public void setDataFechamento(Date dataFechamento) {
 		this.dataFechamento = dataFechamento;
 	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
 	public Fila getFila() {
 		return fila;
 	}
 	public void setFila(Fila fila) {
 		this.fila = fila;
 	}
-	
-	public String getDescricao() {
-		return descricao;
-	}
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-	
-	public int getTempoDias(){
-		//getTime e currentTimeMillis retornam o tempo em milisegundos
-		//dividir por 1000 * 60 * 60 * 24 converte para dias
-		int dias;
-		if(dataFechamento == null){
-			//considera o momento atual para calcular o tempo aberto
-			dias =  (int)(System.currentTimeMillis() - dataAbertura.getTime())/(1000 * 60 * 60 * 24);
-		} else {
-			//considera a data de fechamento para calcular o tempo aberto
-			dias = (int)(dataFechamento.getTime() - dataAbertura.getTime())/(1000 * 60 * 60 * 24);
-		}
-		return dias;
-	}
-	
-	@Override
-	public String toString() {
-		return "Chamado [numero=" + numero + ", dataAbertura=" + dataAbertura
-				+ ", dataFechamento=" + dataFechamento + ", status=" + status
-				+ ", descricao=" + descricao + ", fila=" + fila + "]";
-	}
-
-
 }
