@@ -12,9 +12,10 @@ import br.usjt.arqsw.entity.Fila;
 
 /**
  * 
- * @author Lucas Vasconcelos Molessani - 201508392  
- * CCP3AN-MCA
+ * @author Lucas Vasconcelos Molessani - 201508392
+ * CCP3AN-MCA 
  * Arquitetura de software
+ *
  */
 @Repository
 public class FilaDAO {
@@ -30,6 +31,20 @@ public class FilaDAO {
 	public Fila obterPorId(int id) throws IOException {
 		return manager.find(Fila.class, id);
 
+	}
+
+	public void salvar(Fila fila) {
+		manager.persist(fila);
+		
+	}
+
+	public void atualizar(Fila fila) {
+		manager.merge(fila);
+		
+	}
+
+	public void excluir(Fila fila) {
+		manager.remove(fila);
 	}
 
 }

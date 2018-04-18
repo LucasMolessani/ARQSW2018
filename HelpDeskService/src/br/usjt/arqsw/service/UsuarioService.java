@@ -12,6 +12,7 @@ import br.usjt.arqsw.entity.Usuario;
  * @author Lucas Vasconcelos Molessani - 201508392
  * CCP3AN-MCA 
  * Arquitetura de software
+ *
  */
 @Service
 public class UsuarioService {
@@ -24,7 +25,7 @@ public class UsuarioService {
 	}
 	/**
 	 * Método que valida as credenciais de um usuário
-	 * @param autenticar usuario que deseja logar
+	 * @param autenticar Usuario que quer logar
 	 * @return Usuario
 	 * @throws IOException
 	 */

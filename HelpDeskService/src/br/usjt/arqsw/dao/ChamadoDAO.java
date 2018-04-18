@@ -9,12 +9,12 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import br.usjt.arqsw.entity.Chamado;
-
 /**
  * 
- * @author Lucas Vasconcelos Molessani - 201508392  
- * CCP3AN-MCA
+ * @author Lucas Vasconcelos Molessani - 201508392
+ * CCP3AN-MCA 
  * Arquitetura de software
+ *
  */
 @Repository
 public class ChamadoDAO {

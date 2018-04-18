@@ -27,7 +27,7 @@ public class ChamadoService {
 	}
 	/**
 	 * Método para encontrar chamados pela Fila
-	 * @param fila Fila para encontrar chamados relacionados
+	 * @param fila Fila para encontrar chamados relacionados a ela
 	 * @return Lista de chamados
 	 * @throws IOException
 	 */
@@ -36,8 +36,8 @@ public class ChamadoService {
 	}
 	/**
 	 * Método para salvar um chamado
-	 * @param chamado Chamado que deseja salvar
-	 * @return Chamado salvo
+	 * @param chamado Chamado que se deseja salvar
+	 * @return Chamado que foi salvo
 	 * @throws IOException
 	 */
 	public Chamado salvar(Chamado chamado) throws IOException {

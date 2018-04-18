@@ -25,7 +25,6 @@ import br.usjt.arqsw.service.FilaService;
  * Arquitetura de software
  *
  */
-
 @RestController
 @Transactional
 public class ManterChamadosRest {

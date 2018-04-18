@@ -13,6 +13,7 @@ import br.usjt.arqsw.entity.Usuario;
  * @author Lucas Vasconcelos Molessani - 201508392
  * CCP3AN-MCA 
  * Arquitetura de software
+ *
  */
 @Repository
 public class UsuarioDAO {
@@ -20,7 +21,7 @@ public class UsuarioDAO {
 	@PersistenceContext
 	private EntityManager manager;
 	/**
-	 * Método que obtem um usuário através do nome
+	 * Método que obtem um usuário pelo username
 	 * @param userName
 	 * @return Usuario
 	 * @throws IOException

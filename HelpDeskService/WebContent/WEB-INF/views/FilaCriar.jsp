@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Criar Chamados</title>
+    <title>Criar Fila</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     
@@ -22,37 +22,20 @@
     <c:import url="Menu.jsp" />
     <!-- Container Principal -->
     <div id="main" class="container">
-        <h3 class="page-header">Criar Chamado</h3>
-        <form action="salvar" method="post">
+        <h3 class="page-header">Criar Fila</h3>
+        <form action="fila" method="post" enctype="multipart/form-data">
+            <input name="id" type="hidden" value="${fila.id }">
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="fila">Descrição:</label>
-                    <form:errors path="chamado.descricao" cssStyle="color:red"/><br>
-                    <input class="form-control" placeholder="Descrição" name="descricao"/>
+                    <label for="fila">Nome:</label>
+                    <form:errors path="fila.nome" cssStyle="color:red"/><br>
+                    <input value="${fila.nome}" class="form-control" placeholder="Descrição" name="nome"/>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="fila">Escolha a Fila:</label>
-                    <form:errors path="chamado.fila.id" cssStyle="color:red"/><br>
-                    <select class="form-control" name="fila.id">
-                        <option value="0">Selecione</option>
-                        <c:forEach var="fila" items="${filas}">
-                            <option value="${fila.id}">${fila.nome}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-md-4">
-                    <label for="fila">Cliente:</label>
-                    <form:errors path="idRH" cssStyle="color:red"/><br>
-                    <select class="form-control" name="idRH">
-                        <option value="0">Selecione</option>
-                        <c:forEach var="cliente" items="${clientes}">
-                            <option value="${cliente.id}">${cliente.first_name } ${cliente.last_name } </option>
-                        </c:forEach>
-                    </select>
+                    <label for="fila">Imagem:</label>
+                    <input type="file" class="form-control" placeholder="Descrição" name="file"/>
                 </div>
             </div>
             <div id="actions" class="row">

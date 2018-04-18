@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author Lucas Vasconcelos Molessani - 201508392
  * CCP3AN-MCA 
  * Arquitetura de software
+ *
  */
 @Entity
 @Table(name = "chamado")
