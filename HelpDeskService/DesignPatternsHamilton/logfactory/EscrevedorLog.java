@@ -1,0 +1,1 @@
+package logfactory;/** *  * @author Lucas Vasconcelos Molessani *		   201508392 * */public abstract class EscrevedorLog {	private FerramentaLog log;	protected abstract FerramentaLog criarFerramentaLog();	public void escreverLog(String mensagem) {		if (log == null)			log = criarFerramentaLog();		log.registrarLog(mensagem);	}}

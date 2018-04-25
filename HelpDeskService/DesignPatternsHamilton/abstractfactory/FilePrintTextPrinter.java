@@ -1,0 +1,16 @@
+package abstractfactory;
+
+/**
+ * 
+ * @author Lucas Vasconcelos Molessani
+ *		   201508392
+ *
+ */
+public class FilePrintTextPrinter implements TextPrinter {
+
+	@Override
+	public void print() {
+		System.out.println("File Print");
+	}
+
+}

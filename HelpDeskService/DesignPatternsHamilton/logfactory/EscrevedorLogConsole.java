@@ -1,0 +1,1 @@
+package logfactory;/** *  * @author Lucas Vasconcelos Molessani *		   201508392 * */public class EscrevedorLogConsole extends EscrevedorLog {	protected FerramentaLog criarFerramentaLog() {		return new FerramentaLogConsole();	}}
