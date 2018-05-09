@@ -13,6 +13,7 @@ class Card {
 	public Card(Suit s, int n) {
 		suit = s;
 		if ((n < 2) || (n > 14)) {
+			//a
 			throw new IllegalArgumentException();
 		}
 		number = n;

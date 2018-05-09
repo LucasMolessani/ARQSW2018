@@ -1,12 +1,5 @@
 package singleton;
 
-/**
- * 
- * @author Lucas Vasconcelos Molessani - 201508392
- * CCP3AN-MCA 
- * Arquitetura de software
- *
- */
 class Incremental {
 	private static Incremental singletonInstance;
 	private static int count = 0;
